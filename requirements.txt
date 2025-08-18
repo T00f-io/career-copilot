@@ -1,0 +1,44 @@
+# ------------------------------
+# Career Copilot Project
+# requirements.txt
+# ------------------------------
+# This file tracks the core dependencies needed to run both the
+# FastAPI backend and the Streamlit frontend. Each package is pinned
+# to a known working release (when possible) to ensure reproducibility.
+# 
+# You can install all dependencies by running:
+#   pip install -r requirements.txt
+#
+# Notes:
+# - The devcontainer.json already installs these on Codespaces startup.
+# - This file is here to document the project stack and for local dev.
+# ------------------------------
+
+# ---- Web backend ----
+fastapi             # Modern Python web framework for building APIs
+uvicorn[standard]   # ASGI server to run FastAPI (with autoreload)
+
+# ---- Web frontend ----
+streamlit           # Simple interactive frontend for quick MVP demos
+
+# ---- LLM / AI tooling ----
+langchain           # Framework for chaining LLM calls, prompts, and tools
+chromadb            # Lightweight vector database for embeddings (local dev)
+openai              # OpenAI SDK for calling GPT models and embeddings
+
+# ---- Document parsing ----
+python-docx         # Parse Microsoft Word .docx resumes
+PyPDF2              # Parse PDF resumes
+
+# ---- Data models & env vars ----
+pydantic[dotenv]    # Data validation (schemas for Resume/Job JSON) + load .env files
+
+# ---- Optional but recommended ----
+requests            # For making HTTP calls (job APIs, integrations)
+sqlalchemy          # ORM for database work (Postgres integration later)
+psycopg2-binary     # Postgres driver (needed if using Postgres locally or via Docker)
+
+# ---- Dev / testing tools ----
+pytest              # Testing framework
+httpx               # Async HTTP client (for testing API endpoints)
+black               # Auto-formatter for consistent code style
