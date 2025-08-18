@@ -1,62 +1,62 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from typing import List, Dict
+
+from app.schemas import Resume, Job, GapReport
 
 app = FastAPI()
-
-# -------- Models --------
-class AnalyzeRequest(BaseModel):
-    resume_text: str
-    job_text: str
-
-class AnalyzeResponse(BaseModel):
-    coverage_score: int
-    must_have_gaps: List[str]
-    nice_to_have_gaps: List[str]
-    evidence_map: Dict[str, List[str]]
-
-# -------- Simple routes --------
-@app.get("/health")
-def health():
-    return {"ok": True}
 
 @app.get("/")
 def root():
     return {"message": "Career Copilot API is running! See /docs for endpoints."}
 
-# -------- Stub logic (replace later with embeddings, etc.) --------
-@app.post("/analyze", response_model=AnalyzeResponse)
+@app.get("/health")
+def health():
+    return {"ok": True}
+
+# ----- validation helpers for Week 1 -----
+
+@app.post("/validate/resume", response_model=Resume)
+def validate_resume(resume: Resume):
+    return resume
+
+@app.post("/validate/job", response_model=Job)
+def validate_job(job: Job):
+    return job
+
+# ----- typed analyze stub (real logic comes Week 3) -----
+
+class AnalyzeRequest(BaseModel):
+    resume: Resume
+    job: Job
+
+@app.post("/analyze", response_model=GapReport)
 def analyze(req: AnalyzeRequest):
-    resume_lower = req.resume_text.lower()
-    job_lower = req.job_text.lower()
+    # Gather resume lines (bullets only for MVP)
+    lines = []
+    for exp in req.resume.experiences:
+        for b in exp.bullets:
+            if b.text:
+                lines.append(b.text)
 
-    # naive “must-haves” detected from JD text
-    must_haves = []
-    for kw in ["python", "sql", "fastapi", "streamlit", "langchain"]:
-        if kw in job_lower:
-            must_haves.append(kw.capitalize() if kw != "sql" else "SQL")
+    # simple must-have detection
+    must = [m.lower() for m in req.job.must_have]
+    have = set()
+    for ln in lines:
+        low = ln.lower()
+        for m in must:
+            if m in low:
+                have.add(m)
 
-    # naive skills we "have" based on resume text
-    have = []
-    for kw in ["python", "sql", "fastapi", "streamlit", "langchain"]:
-        if kw in resume_lower:
-            have.append(kw.capitalize() if kw != "sql" else "SQL")
+    must_gaps = [m for m in must if m not in have]
+    coverage = 0 if not must else int(round(100 * (len(have) / len(must))))
 
-    must_gaps = [m for m in must_haves if m not in have]
-    nice_gaps = []  # fill later
+    evidence = {}
+    for m in have:
+        evidence[m] = [ln for ln in lines if m in ln.lower()][:3]
 
-    coverage = 0 if not must_haves else int(round(100 * (len(set(must_haves) & set(have)) / len(set(must_haves)))))
-
-    # crude “evidence”: lines from resume that mention a matched skill
-    evidence: Dict[str, List[str]] = {}
-    resume_lines = [ln.strip() for ln in req.resume_text.splitlines() if ln.strip()]
-    for skill in have:
-        lines = [ln for ln in resume_lines if skill.lower() in ln.lower()]
-        evidence[skill] = lines[:3] if lines else []
-
-    return AnalyzeResponse(
+    return GapReport(
         coverage_score=coverage,
         must_have_gaps=must_gaps,
-        nice_to_have_gaps=nice_gaps,
-        evidence_map=evidence
+        nice_to_have_gaps=[],
+        evidence_map=evidence,
     )
