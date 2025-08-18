@@ -1,0 +1,24 @@
+{
+  "name": "career-copilot",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "18" }
+  },
+  "postCreateCommand": "pip install -U pip && pip install fastapi uvicorn[standard] streamlit langchain chromadb openai python-docx PyPDF2 pydantic[dotenv]",
+  "forwardPorts": [8000, 8501],
+  "portsAttributes": {
+    "8000": { "label": "FastAPI" },
+    "8501": { "label": "Streamlit" }
+  },
+  "remoteEnv": { "PYTHONUNBUFFERED": "1" },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-azuretools.vscode-docker",
+        "humao.rest-client"
+      ]
+    }
+  }
+}
