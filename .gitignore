@@ -205,3 +205,15 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# ---- Extra ignores for this project ----
+
+# VS Code workspace settings
+.vscode/
+.code-workspace
+
+# macOS system files
+.DS_Store
+
+# Codespaces / Devcontainer logs
+.devcontainer/*.log
