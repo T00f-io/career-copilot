@@ -43,3 +43,4 @@ pytest              # Testing framework
 httpx               # Async HTTP client (for testing API endpoints)
 black               # Auto-formatter for consistent code style
 email-validator
+python-multipart
