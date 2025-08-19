@@ -1,7 +1,8 @@
 # app/services/parsing.py
 from __future__ import annotations
 from typing import List, Optional
-import io, re
+import io
+import re
 
 from app.schemas import Resume, Basics, Skill, Bullet, Experience, Job
 
@@ -44,17 +45,16 @@ LINE_SPLIT = re.compile(r"\r?\n+")
 
 # A tiny skills/tools seed list for MVP heuristics (expand later)
 SEED_SKILLS = {"python", "sql", "etl", "ml", "machine learning", "statistics"}
-SEED_TOOLS  = {"fastapi", "streamlit", "pandas", "numpy", "airflow", "docker", "aws"}
+SEED_TOOLS = {"fastapi", "streamlit", "pandas", "numpy", "airflow", "docker", "aws"}
 
 def _tokenize_lines(text: str) -> List[str]:
-    lines = [ln.strip() for ln in LINE_SPLIT.split(text or "") if ln.strip()]
-    return lines
+    return [ln.strip() for ln in LINE_SPLIT.split(text or "") if ln.strip()]
 
 def _find_email(text: str) -> Optional[str]:
     m = EMAIL_RE.search(text or "")
     return m.group(0) if m else None
 
-# --- Resume parsing (very pragmatic MVP) ---
+# --- Resume parsing (pragmatic MVP) ---
 def parse_resume_text(text: str) -> Resume:
     lines = _tokenize_lines(text)
     email = _find_email(text)
@@ -68,10 +68,10 @@ def parse_resume_text(text: str) -> Resume:
     # crude skills/tools detection by presence
     lower = text.lower()
     skills = [Skill(name=s) for s in sorted({s for s in SEED_SKILLS if s in lower})]
-    tools  = sorted({t for t in SEED_TOOLS  if t in lower})
+    tools = sorted({t for t in SEED_TOOLS if t in lower})
 
-    # bullets: take lines that look like bullets or sentences with verbs (MVP)
-    bullets = []
+    # bullets: take lines that look like bullets or sentences with enough tokens (MVP)
+    bullets: List[Bullet] = []
     for ln in lines:
         if ln.startswith(("-", "•", "*")) or len(ln.split()) >= 6:
             bullets.append(Bullet(text=ln.lstrip("-•* ").strip()))
@@ -88,43 +88,68 @@ def parse_resume_text(text: str) -> Resume:
     )
 
 # --- Job parsing (simple rules) ---
-HEAD_REQ  = re.compile(r"requirement|qualification|must[- ]have", re.I)
+HEAD_REQ = re.compile(r"requirement|qualification|must[- ]have", re.I)
 HEAD_PREF = re.compile(r"preferred|nice[- ]to[- ]have|plus", re.I)
 HEAD_RESP = re.compile(r"responsibilit|duties|what you.*do", re.I)
-HEAD_TOOLS= re.compile(r"tool|tech|stack|technology", re.I)
+HEAD_TOOLS = re.compile(r"tool|tech|stack|technology", re.I)
 
 BULLETish = re.compile(r"^(\s*[-*•]\s+)|(.{0,2}\d\.)")
 
 def parse_jd_text(text: str) -> Job:
     lines = _tokenize_lines(text)
-    must, nice, tools, resp = [], [], [], []
+    must: List[str] = []
+    nice: List[str] = []
+    tools: List[str] = []
+    resp: List[str] = []
 
-    target = None
+    target: Optional[str] = None
     for ln in lines:
-        low = ln.lower()
         # detect section heads
-        if HEAD_REQ.search(ln):   target = "must"; continue
-        if HEAD_PREF.search(ln):  target = "nice"; continue
-        if HEAD_RESP.search(ln):  target = "resp"; continue
-        if HEAD_TOOLS.search(ln): target = "tools"; continue
+        if HEAD_REQ.search(ln):
+            target = "must"
+            continue
+        if HEAD_PREF.search(ln):
+            target = "nice"
+            continue
+        if HEAD_RESP.search(ln):
+            target = "resp"
+            continue
+        if HEAD_TOOLS.search(ln):
+            target = "tools"
+            continue
 
         # collect bullet-like lines under current target
         if BULLETish.search(ln) and target:
             item = ln.lstrip("-*•0123456789. ").strip()
-            if target == "must":  must.append(item)
-            if target == "nice":  nice.append(item)
-            if target == "resp":  resp.append(item)
-            if target == "tools": tools.append(item)
+            if target == "must":
+                must.append(item)
+            elif target == "nice":
+                nice.append(item)
+            elif target == "resp":
+                resp.append(item)
+            elif target == "tools":
+                tools.append(item)
 
     # fallbacks: if no sections found, do keyword mining
+    lower = text.lower()
     if not must:
         for s in SEED_SKILLS:
-            if s in text.lower(): must.append(s)
+            if s in lower:
+                must.append(s)
     if not tools:
         for t in SEED_TOOLS:
-            if t in text.lower(): tools.append(t)
+            if t in lower:
+                tools.append(t)
 
-    title = next((ln for ln in lines if len(ln) < 80 and ln.istitle()), "Unknown Role")
+    # Better MVP: take the first non-empty line as title,
+    # but avoid common section headers like "Requirements:" etc.
+    title = next((ln for ln in lines if ln.strip()), "Unknown Role")
+    header_re = re.compile(
+        r"(requirement|qualification|responsibilit|duties|preferred|nice[- ]to[- ]have|tools|stack|technology)",
+        re.I,
+    )
+    if header_re.search(title):
+        title = next((ln for ln in lines if ln.strip() and not header_re.search(ln)), "Unknown Role")
 
     return Job(
         title=title,
