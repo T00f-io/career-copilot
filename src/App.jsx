@@ -1,25 +1,16 @@
-import { useState, useEffect } from 'react'
-import { supabase } from './lib/supabase'
+import { useState } from 'react'
+import ResumeSection from './components/ResumeSection'
+import WorkHistorySection from './components/WorkHistorySection'
+import SkillsSection from './components/SkillsSection'
+
+const TABS = [
+  { id: 'resume', label: 'Resume' },
+  { id: 'work', label: 'Work History' },
+  { id: 'skills', label: 'Skills' },
+]
 
 function App() {
-  const [status, setStatus] = useState('Checking connection...')
-  const [isError, setIsError] = useState(false)
-
-  useEffect(() => {
-    async function testConnection() {
-      // Query the skills table — empty is fine, we just want a clean response
-      const { error } = await supabase.from('skills').select('*').limit(1)
-
-      if (error) {
-        setStatus(`Connection failed: ${error.message}`)
-        setIsError(true)
-      } else {
-        setStatus('Connected to Supabase ✓')
-        setIsError(false)
-      }
-    }
-    testConnection()
-  }, [])
+  const [activeTab, setActiveTab] = useState('resume')
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
@@ -29,17 +20,34 @@ function App() {
             Career Copilot
           </h1>
           <p className="text-sm text-zinc-400 mt-1">
-            AI job fit analyzer & resume optimizer
+            Resume Vault
           </p>
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-6 py-16">
-        <div className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-8">
-          <h2 className="text-lg font-medium">Sprint 2 — Backend</h2>
-          <p className={`text-sm mt-2 ${isError ? 'text-red-400' : 'text-zinc-400'}`}>
-            {status}
-          </p>
+      <main className="max-w-5xl mx-auto px-6 py-8">
+        {/* Tab navigation */}
+        <div className="flex gap-1 border-b border-zinc-800 mb-8">
+          {TABS.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors ${
+                activeTab === tab.id
+                  ? 'border-white text-white'
+                  : 'border-transparent text-zinc-400 hover:text-zinc-200'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab panels */}
+        <div>
+          {activeTab === 'resume' && <ResumeSection />}
+          {activeTab === 'work' && <WorkHistorySection />}
+          {activeTab === 'skills' && <SkillsSection />}
         </div>
       </main>
     </div>
