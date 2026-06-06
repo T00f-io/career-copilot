@@ -1,90 +1,186 @@
-# Career Copilot
+# 🎯 Career Copilot
 
-**An AI-powered job-fit analyzer and resume optimizer that works only from real, documented experience — it highlights and reframes, it never fabricates.**
+An AI-powered job-fit analyzer and resume optimizer that works only from real, documented experience. It highlights and reframes. It never fabricates.
 
-Career Copilot analyzes a job description against a structured "vault" of your background, returns an honest fit score with a gap breakdown, and generates evidence-based resume suggestions. A second mode evaluates Upwork gigs and drafts client proposals under strict integrity and voice constraints.
+Built from zero as both a real job-search tool and an applied AI engineering portfolio project.
 
-Built full-stack with a React frontend, a Supabase database, and the Claude API accessed through a Cloudflare Worker proxy.
+*Live demo and showcase links coming with the deployment release.*
 
----
-
-## Why I built it
-
-Job and freelance applications are slow and guesswork-heavy. I wanted a tool that gives a straight answer — am I a fit, where are the gaps, and how do I present my real experience better for *this* role — without the inflation that makes AI-generated applications hollow.
-
-The hard constraint shaped the whole design: **the tool cannot lie.** Every claim it surfaces must trace to something I actually documented. That principle is enforced in the prompts, not just hoped for.
-
-It also doubles as applied AI-engineering evidence: prompt design for structured output, a secure API-proxy pattern, a database with row-level security, and a React UI that turns model responses into a usable product.
+→ [GitHub Repo](https://github.com/T00f-io/career-copilot)
 
 ---
 
-## Features
+## What Is This?
 
-### Job application mode
-- **Resume Vault** — resume text, work history, projects, education, and skills stored in Supabase as the single source of truth the AI reasons from.
-- **Job Analyzer** — paste a job description; the vault is assembled into a structured context block and analyzed against the role.
-- **Fit Report** — honest fit score, plain-spoken summary, must-have vs nice-to-have gaps, the skills the role prioritizes, and evidence-backed strengths.
-- **Resume Optimizer** — bullet-level reframes (same facts, sharper framing) plus surfacing of *undersold* experience already in the vault, each suggestion citing its evidence.
-- **Analysis History** — every analysis saved and revisitable, to compare fit across roles over time.
+Career Copilot is a full-stack AI application that analyzes a job description against a structured vault of your real background, then returns an honest fit score, a gap breakdown, and evidence-based resume suggestions. A second mode evaluates Upwork gigs and drafts client proposals under strict integrity and voice constraints.
 
-### Freelance mode (Upwork)
-- **Gig Verdict** — applies a send-or-skip framework (hard filters, green lights, red flags, stretch-bid logic) and returns a clear recommendation rather than vague encouragement. Missing data is marked *unknown*, never assumed to pass.
-- **Cover Letter Generator** — drafts a client-ready proposal under hard voice and integrity rules, with copy-to-clipboard, screening-question answers, and tactical notes.
+The core constraint shaped the entire design: **the tool cannot lie.** Every claim it surfaces must trace to something actually documented. That principle is enforced in the prompt layer, not just hoped for.
 
-### Cross-cutting
-- **Plain-English project capture** — brain-dump a side project in natural language; the model structures it into clean fields for review before saving.
-- **Store rich, output brief** — the vault holds full structured detail for accurate comparison; generated bullets and proposals apply smart brevity and speak only to what was actually produced.
+Built simultaneously as a personal job-search tool and an applied AI engineering portfolio piece.
+
+---
+
+## The Problem It Solves
+
+Job and freelance applications are slow and guesswork-heavy. Most AI resume tools inflate: they pad experience, invent metrics, and write cover letters that fall apart the moment someone asks a follow-up question.
+
+Career Copilot does the opposite. It gives a straight answer:
+
+- Am I actually a fit for this role?
+- Where are my real gaps, must-have vs nice-to-have?
+- Which skills does this specific role prioritize?
+- How do I reframe experience I genuinely have, without overclaiming experience I don't?
+
+Honest assessment over flattery. Evidence over invention.
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | React + Vite + Tailwind CSS |
+| Database | Supabase (PostgreSQL) |
+| AI | Claude API — claude-sonnet-4-5 |
+| API Security | Cloudflare Worker (proxy) |
+| Hosting | GitHub Pages |
 
 ---
 
 ## Architecture
 
 ```
-React (Vite + Tailwind)
-        |
-        |  assembles vault into a structured context block
-        v
-Cloudflare Worker  ──>  Claude API
-   (proxy; API key       (analysis, optimization,
-    held as a secret)     gig verdicts, drafting)
-        |
-        v
-   Supabase (PostgreSQL + Row-Level Security)
-   resume · work history · projects · education · skills · analyses
+React App (GitHub Pages)
+    |  assemble vault into a structured context block
+    |  Supabase REST API — fetch resume, work, projects, education, skills
+Cloudflare Worker — career-copilot-worker
+    |  attach Anthropic API key server-side (held as a secret)
+    |  Claude API — analysis, optimization, gig verdicts, drafting
+Structured JSON response
+    |  parsed defensively, rendered as a Fit Report
+    |  Supabase — analysis saved to history
 ```
 
-**Request flow:** the React app pulls the vault from Supabase, assembles it into a single structured prompt context, and sends it to a Cloudflare Worker. The Worker attaches the Anthropic API key server-side and forwards the request to Claude, so the key never ships in the frontend bundle. Structured JSON comes back, gets parsed, and renders as a report.
+The browser never sees the API key. It only ever talks to the Worker, which holds the key as a secret and forwards requests to Claude.
 
 ---
 
-## Tech stack
+## Features
 
-| Layer | Technology |
+### Job Application Mode
+
+| Module | Description |
 |---|---|
-| Frontend | React, Vite, Tailwind CSS |
-| Database | Supabase (PostgreSQL + Row-Level Security) |
-| AI | Claude API (`claude-sonnet-4-5`) |
-| API proxy | Cloudflare Workers |
-| Hosting | GitHub Pages |
+| 🗂️ Resume Vault | Resume, work history, projects, education, and skills stored in Supabase as the single source of truth |
+| 🎯 Job Analyzer | Paste a job description; the full vault is assembled and analyzed against the role |
+| 📊 Fit Report | Honest fit score, summary, must-have vs nice-to-have gaps, prioritized skills, evidence-backed strengths |
+| ✍️ Resume Optimizer | Bullet-level reframes plus surfacing of undersold experience, each suggestion citing its evidence |
+| 🕓 Analysis History | Every analysis saved and revisitable, to compare fit across roles over time |
+
+### Freelance Mode
+
+| Module | Description |
+|---|---|
+| 💼 Gig Verdict | Send-or-skip framework: hard filters, green lights, red flags, stretch-bid logic. Missing data is marked unknown, never assumed to pass |
+| 📝 Cover Letter Generator | Client-ready proposals under hard voice and integrity rules, with copy-to-clipboard, screening answers, and tactical notes |
+
+### Cross-Cutting
+
+| Feature | Description |
+|---|---|
+| 🧩 Plain-English Capture | Brain-dump a side project in natural language; Claude structures it into clean fields for review before saving |
+| 📦 Store Rich, Output Brief | The vault holds full structured detail for accurate comparison; generated bullets and proposals apply smart brevity to what was actually produced |
+| 🔒 Secure Proxy | A Cloudflare Worker holds the API key as a secret, off the public frontend |
 
 ---
 
-## Engineering decisions worth calling out
+## AI Use Cases
 
-- **API key never touches the client.** A Cloudflare Worker proxies every Claude call with the key stored as a Worker secret. The browser only ever talks to the Worker.
-- **Integrity enforced in the prompt layer.** System prompts require every claim to trace to documented experience, forbid inventing metrics, and distinguish proven LLM *integration* work from model building. Resume bullets and proposals are reframes of real experience, never fabrications.
-- **Structured JSON output, defensively parsed.** The model is constrained to a fixed JSON shape so the UI can render reliably; parsing strips stray markdown fences and fails loudly rather than silently when output is malformed.
-- **Single source of truth.** The vault is assembled the same way for every feature, so the Analyzer, Optimizer, and freelance mode all reason from identical, deduplicated context.
-- **Row-Level Security on every table** as a deliberate default, with the Worker proxy as the key boundary.
+Distinct Claude API integrations, each with a purpose-built prompt:
 
----
+1. **Fit Analysis** — vault + job description to a structured fit report with honest scoring
+2. **Resume Optimization** — evidence-locked reframes and undersold-experience surfacing
+3. **Gig Verdict** — applies a freelance send-or-skip framework to an Upwork post
+4. **Proposal Drafting** — client cover letters under strict voice and integrity constraints
+5. **Project Parsing** — freeform project descriptions structured into clean vault fields
 
-## Project status
-
-Fully functional and in active personal use. Built across a planned sprint sequence covering scaffold, database, the Resume Vault, the Claude proxy, the Analyzer and Fit Report, the Optimizer, Analysis History, and freelance mode, plus a vault expansion adding projects, education, and plain-English capture.
+Every prompt is engineered for a fixed JSON output shape and enforces integrity rules: no fabrication, evidence-backed claims only, and a clear line between proven LLM integration work and model building.
 
 ---
 
-## Notes
+## Database Schema
 
-Single-user by design. Built as both a working tool and a portfolio demonstration of applied AI engineering.
+```
+resume_vault    — professional summary + full resume text (single source of truth)
+work_history    — roles, titles, dates, descriptions
+projects        — side projects: stack, problem, what was built, outcome, link
+education       — credentials, institutions, fields, details
+skills          — skills and tools, grouped by category
+analyses        — saved fit analyses with score and full structured report
+```
+
+All tables have Row-Level Security enabled via Supabase.
+
+---
+
+## Sprint History
+
+| Sprint | Focus | Status |
+|---|---|---|
+| 1 | Foundation — scaffold, Supabase, schema, RLS | ✅ Complete |
+| 2 | Resume Vault + Cloudflare Worker Claude proxy | ✅ Complete |
+| 3 | Job Analyzer, Fit Report, Resume Optimizer | ✅ Complete |
+| 4 | Analysis History + Upwork freelance mode | ✅ Complete |
+| — | Fast follow: projects, education, plain-English capture | ✅ Complete |
+| 5 | Polish & deploy — GitHub Pages, README, showcase | 🔜 Planned |
+
+---
+
+## Running Locally
+
+```bash
+# Clone
+git clone https://github.com/T00f-io/career-copilot.git
+cd career-copilot
+
+# Install
+npm install
+
+# Dev server
+npm run dev
+
+# Deploy to GitHub Pages
+npm run deploy
+```
+
+### Environment
+
+Create a `.env` file in the project root:
+
+```
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_KEY=your_supabase_publishable_key
+VITE_WORKER_URL=your_cloudflare_worker_url
+```
+
+The Cloudflare Worker holds the Anthropic API key as a secret. It is never exposed in the frontend bundle.
+
+---
+
+## Portfolio Notes
+
+This project demonstrates end-to-end AI product engineering:
+
+- React component architecture and state management
+- PostgreSQL relational schema design with row-level security
+- Claude API prompt engineering across five distinct use cases
+- Cloudflare Worker secure API-proxy pattern
+- Structured-output design and defensive JSON parsing
+- Integrity-first prompt design — evidence-backed output, no fabrication
+- Single source of truth assembled consistently for every feature
+
+Built independently from zero. Single-user by design.
+
+---
+
+Built by [@T00f-io](https://github.com/T00f-io) · React · Supabase · Claude API · Cloudflare Workers
