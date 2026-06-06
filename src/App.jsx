@@ -3,6 +3,8 @@ import ResumeSection from './components/ResumeSection'
 import WorkHistorySection from './components/WorkHistorySection'
 import SkillsSection from './components/SkillsSection'
 import Analyzer from './components/Analyzer'
+import History from './components/History'
+import Upwork from './components/Upwork'
 
 const VAULT_TABS = [
   { id: 'resume', label: 'Resume' },
@@ -10,8 +12,15 @@ const VAULT_TABS = [
   { id: 'skills', label: 'Skills' },
 ]
 
+const VIEWS = [
+  { id: 'analyzer', label: 'Analyzer' },
+  { id: 'upwork', label: 'Upwork' },
+  { id: 'history', label: 'History' },
+  { id: 'vault', label: 'Resume Vault' },
+]
+
 function App() {
-  const [view, setView] = useState('analyzer') // 'analyzer' | 'vault'
+  const [view, setView] = useState('analyzer')
   const [activeTab, setActiveTab] = useState('resume')
 
   return (
@@ -25,31 +34,30 @@ function App() {
             </p>
           </div>
           <nav className="flex gap-1">
-            <button
-              onClick={() => setView('analyzer')}
-              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-                view === 'analyzer'
-                  ? 'bg-white text-zinc-950'
-                  : 'text-zinc-400 hover:text-white'
-              }`}
-            >
-              Analyzer
-            </button>
-            <button
-              onClick={() => setView('vault')}
-              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-                view === 'vault'
-                  ? 'bg-white text-zinc-950'
-                  : 'text-zinc-400 hover:text-white'
-              }`}
-            >
-              Resume Vault
-            </button>
+            {VIEWS.map((v) => (
+              <button
+                key={v.id}
+                onClick={() => setView(v.id)}
+                className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                  view === v.id
+                    ? 'bg-white text-zinc-950'
+                    : 'text-zinc-400 hover:text-white'
+                }`}
+              >
+                {v.label}
+              </button>
+            ))}
           </nav>
         </div>
       </header>
 
       <main className="max-w-5xl mx-auto px-6 py-8">
+        {view === 'analyzer' && <Analyzer />}
+
+        {view === 'history' && <History />}
+        
+        {view === 'upwork' && <Upwork />}
+
         {view === 'vault' && (
           <>
             <div className="flex gap-1 border-b border-zinc-800 mb-8">
@@ -74,8 +82,6 @@ function App() {
             </div>
           </>
         )}
-
-        {view === 'analyzer' && <Analyzer />}
       </main>
     </div>
   )
