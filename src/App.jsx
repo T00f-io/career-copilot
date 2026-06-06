@@ -2,6 +2,8 @@ import { useState } from 'react'
 import ResumeSection from './components/ResumeSection'
 import WorkHistorySection from './components/WorkHistorySection'
 import SkillsSection from './components/SkillsSection'
+import ProjectsSection from './components/ProjectsSection'
+import EducationSection from './components/EducationSection'
 import Analyzer from './components/Analyzer'
 import History from './components/History'
 import Upwork from './components/Upwork'
@@ -9,6 +11,8 @@ import Upwork from './components/Upwork'
 const VAULT_TABS = [
   { id: 'resume', label: 'Resume' },
   { id: 'work', label: 'Work History' },
+  { id: 'projects', label: 'Projects' },
+  { id: 'education', label: 'Education' },
   { id: 'skills', label: 'Skills' },
 ]
 
@@ -55,7 +59,7 @@ function App() {
         {view === 'analyzer' && <Analyzer />}
 
         {view === 'history' && <History />}
-        
+
         {view === 'upwork' && <Upwork />}
 
         {view === 'vault' && (
@@ -78,6 +82,8 @@ function App() {
             <div>
               {activeTab === 'resume' && <ResumeSection />}
               {activeTab === 'work' && <WorkHistorySection />}
+              {activeTab === 'projects' && <ProjectsSection />}
+              {activeTab === 'education' && <EducationSection />}
               {activeTab === 'skills' && <SkillsSection />}
             </div>
           </>
