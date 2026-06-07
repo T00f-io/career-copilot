@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Career Copilot — Project Showcase</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a14;
+    --surface: #13131f;
+    --surface-2: #1c1c2e;
+    --border: #2a2a42;
+    --border-hi: #3d3d5c;
+    --muted: #8888a8;
+    --dim: #5c5c7a;
+    --text: #f4f4fb;
+    --violet: #8b5cf6;
+    --cyan: #22d3ee;
+    --magenta: #f43f9d;
+    --accent: #8b5cf6;
+    --accent-dim: rgba(139, 92, 246, 0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 50% 60% at 75% 30%, rgba(139,92,246,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 60% 80%, rgba(34,211,238,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 60px 80px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--cyan);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--violet), var(--cyan));
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(64px, 8vw, 120px);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    margin-bottom: 32px;
+  }
+
+  .hero-title span {
+    display: block;
+    background: linear-gradient(120deg, var(--violet) 0%, var(--magenta) 50%, var(--cyan) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-desc {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 480px;
+    margin-bottom: 48px;
+    font-weight: 300;
+  }
+
+  .hero-links {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(120deg, var(--violet), var(--magenta));
+    color: var(--text);
+    padding: 14px 28px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+    border-radius: 6px;
+  }
+
+  .btn-primary:hover { filter: brightness(1.15); transform: translateY(-1px); }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--border-hi);
+    color: var(--muted);
+    padding: 14px 28px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.2s;
+    border-radius: 6px;
+  }
+
+  .btn-secondary:hover { border-color: var(--cyan); color: var(--cyan); }
+
+  .hero-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 80px 80px 40px;
+    position: relative;
+  }
+
+  .hero-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    width: 100%;
+    max-width: 440px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 32px 28px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.6s ease both;
+    border-radius: 4px;
+  }
+
+  .stat-card:nth-child(1) { animation-delay: 0.1s; }
+  .stat-card:nth-child(2) { animation-delay: 0.2s; }
+  .stat-card:nth-child(3) { animation-delay: 0.3s; }
+  .stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--violet), var(--cyan), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .stat-card:hover::before { opacity: 1; }
+  .stat-card:hover { border-color: var(--border-hi); }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    line-height: 1;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .stat-num span {
+    background: linear-gradient(120deg, var(--violet), var(--cyan));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 32px;
+  }
+
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0 80px;
+  }
+
+  /* SECTION */
+  .section { padding: 100px 80px; }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--cyan);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 5vw, 72px);
+    line-height: 1;
+    margin-bottom: 60px;
+    letter-spacing: 0.02em;
+  }
+
+  /* PROBLEM/SOLUTION */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+
+  .prose-block h3 {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--dim);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .prose-block p {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--muted);
+    font-weight: 300;
+    margin-bottom: 16px;
+  }
+
+  .prose-block p:last-child { margin-bottom: 0; }
+
+  .prose-block strong { color: var(--text); font-weight: 500; }
+
+  /* TECH STACK */
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 2px;
+  }
+
+  .tech-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 24px;
+    transition: all 0.2s;
+    border-radius: 4px;
+  }
+
+  .tech-item:hover {
+    border-color: var(--border-hi);
+    background: var(--surface-2);
+  }
+
+  .tech-item-icon { font-size: 24px; margin-bottom: 12px; }
+
+  .tech-item-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .tech-item-desc {
+    font-size: 12px;
+    color: var(--dim);
+    line-height: 1.5;
+  }
+
+  /* SPRINTS */
+  .sprint-list { display: flex; flex-direction: column; gap: 2px; }
+
+  .sprint-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 32px 36px;
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 40px;
+    align-items: start;
+    transition: border-color 0.2s;
+    border-radius: 4px;
+  }
+
+  .sprint-item:hover { border-color: var(--border-hi); }
+
+  .sprint-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: var(--border);
+    line-height: 1;
+  }
+
+  .sprint-num.active {
+    background: linear-gradient(120deg, var(--violet), var(--cyan));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .sprint-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 12px;
+    letter-spacing: 0.05em;
+  }
+
+  .sprint-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .sprint-features li {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 300;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .sprint-features li::before {
+    content: '→';
+    color: var(--violet);
+    flex-shrink: 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    margin-top: 2px;
+  }
+
+  .sprint-badge {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    margin-bottom: 16px;
+    border-radius: 3px;
+  }
+
+  .badge-complete { background: var(--accent-dim); color: var(--violet); }
+  .badge-planned { background: rgba(136,136,168,0.12); color: var(--dim); }
+
+  /* FEATURES GRID */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 32px;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+  }
+
+  .feature-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--violet), var(--magenta), var(--cyan));
+    transform: scaleX(0);
+    transition: transform 0.3s;
+  }
+
+  .feature-card:hover::after { transform: scaleX(1); }
+  .feature-card:hover { border-color: var(--border-hi); }
+
+  .feature-icon { font-size: 28px; margin-bottom: 16px; }
+
+  .feature-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 10px;
+    letter-spacing: 0.05em;
+  }
+
+  .feature-desc {
+    font-size: 13px;
+    color: var(--dim);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* PIPELINE */
+  .pipeline {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    padding: 40px 0;
+  }
+
+  .pipeline-step {
+    flex-shrink: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 24px 28px;
+    text-align: center;
+    min-width: 160px;
+    border-radius: 4px;
+  }
+
+  .pipeline-step-icon { font-size: 24px; margin-bottom: 10px; }
+
+  .pipeline-step-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text);
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+
+  .pipeline-step-desc { font-size: 11px; color: var(--dim); }
+
+  .pipeline-arrow {
+    flex-shrink: 0;
+    color: var(--cyan);
+    font-family: 'DM Mono', monospace;
+    font-size: 18px;
+    padding: 0 8px;
+  }
+
+  /* PORTFOLIO */
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+
+  .portfolio-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 36px;
+    border-radius: 4px;
+  }
+
+  .portfolio-item-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--magenta);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .portfolio-item-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .portfolio-item-desc {
+    font-size: 13px;
+    color: var(--dim);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* PRINCIPLE BANNER */
+  .principle {
+    margin: 0 80px;
+    background: linear-gradient(120deg, rgba(139,92,246,0.08), rgba(34,211,238,0.06));
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 48px 56px;
+    text-align: center;
+  }
+
+  .principle-quote {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+    margin-bottom: 16px;
+  }
+
+  .principle-quote span {
+    background: linear-gradient(120deg, var(--violet), var(--magenta), var(--cyan));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .principle-sub {
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 620px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* FOOTER */
+  .footer {
+    padding: 60px 80px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-left {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 0.05em;
+  }
+
+  .footer-left span {
+    background: linear-gradient(120deg, var(--violet), var(--cyan));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .footer-right {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--dim);
+    text-align: right;
+    line-height: 1.8;
+  }
+
+  .footer-right a {
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-right a:hover { color: var(--cyan); }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-left { padding: 60px 32px; }
+    .hero-right { padding: 0 32px 60px; }
+    .section { padding: 60px 32px; }
+    .divider { margin: 0 32px; }
+    .principle { margin: 0 32px; padding: 36px 28px; }
+    .two-col { grid-template-columns: 1fr; gap: 40px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .portfolio-grid { grid-template-columns: 1fr; }
+    .sprint-item { grid-template-columns: 1fr; gap: 16px; }
+    .sprint-num { font-size: 32px; }
+    .footer { flex-direction: column; gap: 24px; padding: 40px 32px; text-align: center; }
+    .footer-right { text-align: center; }
+    .tech-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Portfolio Project · Applied AI Engineering</div>
+    <h1 class="hero-title">
+      Career<br><span>Copilot</span>
+    </h1>
+    <p class="hero-desc">
+      An AI job-fit analyzer and resume optimizer that works only from real, documented experience. It scores fit honestly, surfaces skill gaps, and reframes genuine experience — it never fabricates. Full-stack: React, Supabase, Claude API behind a Cloudflare Worker proxy.
+    </p>
+    <div class="hero-links">
+      <a href="https://github.com/T00f-io/career-copilot" target="_blank" class="btn-primary">
+        View on GitHub →
+      </a>
+      <a href="https://github.com/T00f-io/career-copilot#readme" target="_blank" class="btn-secondary">
+        Read the README
+      </a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-stats">
+      <div class="stat-card">
+        <div class="stat-num">7<span>+</span></div>
+        <div class="stat-label">Modules Shipped</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">6<span>×</span></div>
+        <div class="stat-label">DB Tables (RLS)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">2<span>×</span></div>
+        <div class="stat-label">Analysis Modes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">0<span>$</span></div>
+        <div class="stat-label">Monthly Hosting</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PROBLEM / SOLUTION -->
+<section class="section">
+  <div class="section-label">The Brief</div>
+  <h2 class="section-title">Problem → Solution</h2>
+  <div class="two-col">
+    <div class="prose-block">
+      <h3>The Problem</h3>
+      <p>Job and freelance applications are slow and guesswork-heavy. Most AI resume tools inflate: they invent metrics and write cover letters that collapse under a single follow-up question.</p>
+      <p>I wanted the opposite. A tool that gives a straight answer: am I a fit, where are the gaps, and how do I present my real experience better for <strong>this</strong> role, without overclaiming anything I would have to defend on a call.</p>
+    </div>
+    <div class="prose-block">
+      <h3>The Solution</h3>
+      <p>A full-stack AI app that analyzes a job description against a structured vault of real, documented experience and returns an honest fit score, a gap breakdown, and evidence-based resume suggestions.</p>
+      <p>The core constraint shaped everything: <strong>the tool cannot lie.</strong> Every suggestion must trace to something actually documented. That rule lives in the prompt layer, not just in good intentions.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CORE PRINCIPLE -->
+<section class="section" style="padding-top: 0;">
+  <div class="principle">
+    <div class="principle-quote">"It highlights and reframes. <span>It never fabricates.</span>"</div>
+    <div class="principle-sub">
+      System prompts require every claim to trace to documented experience, forbid inventing metrics, and distinguish proven LLM integration work from model building. Resume bullets and proposals are reframes of real experience, never inventions.
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TECH STACK -->
+<section class="section">
+  <div class="section-label">Architecture</div>
+  <h2 class="section-title">Tech Stack</h2>
+  <div class="tech-grid">
+    <div class="tech-item">
+      <div class="tech-item-icon">⚛️</div>
+      <div class="tech-item-name">React + Vite</div>
+      <div class="tech-item-desc">Component-based UI with Tailwind CSS. Deployed to GitHub Pages.</div>
+    </div>
+    <div class="tech-item">
+      <div class="tech-item-icon">🐘</div>
+      <div class="tech-item-name">Supabase</div>
+      <div class="tech-item-desc">PostgreSQL with row-level security across six tables. Single source of truth.</div>
+    </div>
+    <div class="tech-item">
+      <div class="tech-item-icon">🤖</div>
+      <div class="tech-item-name">Claude API</div>
+      <div class="tech-item-desc">Anthropic claude-sonnet-4-5. Analysis, optimization, gig verdicts, drafting.</div>
+    </div>
+    <div class="tech-item">
+      <div class="tech-item-icon">⚡</div>
+      <div class="tech-item-name">Cloudflare Worker</div>
+      <div class="tech-item-desc">Proxy holding the API key as a secret. The browser never sees it.</div>
+    </div>
+    <div class="tech-item">
+      <div class="tech-item-icon">🎨</div>
+      <div class="tech-item-name">Tailwind CSS</div>
+      <div class="tech-item-desc">Dark, minimal design system. Structured-JSON output rendered as reports.</div>
+    </div>
+    <div class="tech-item">
+      <div class="tech-item-icon">🚀</div>
+      <div class="tech-item-name">GitHub Pages</div>
+      <div class="tech-item-desc">Free static hosting with a gh-pages deploy pipeline.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PIPELINE -->
+<section class="section">
+  <div class="section-label">Request Flow</div>
+  <h2 class="section-title">How It Works</h2>
+  <div class="pipeline">
+    <div class="pipeline-step">
+      <div class="pipeline-step-icon">📋</div>
+      <div class="pipeline-step-name">Paste JD / Gig</div>
+      <div class="pipeline-step-desc">Job or Upwork gig description in</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step">
+      <div class="pipeline-step-icon">🗄️</div>
+      <div class="pipeline-step-name">Vault Assembly</div>
+      <div class="pipeline-step-desc">Resume, work, projects, skills bundled</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step">
+      <div class="pipeline-step-icon">⚡</div>
+      <div class="pipeline-step-name">CF Worker</div>
+      <div class="pipeline-step-desc">Attaches API key server-side</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step">
+      <div class="pipeline-step-icon">🤖</div>
+      <div class="pipeline-step-name">Claude API</div>
+      <div class="pipeline-step-desc">Honest structured analysis</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step">
+      <div class="pipeline-step-icon">📊</div>
+      <div class="pipeline-step-name">Fit Report</div>
+      <div class="pipeline-step-desc">Score, gaps, reframes rendered</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step">
+      <div class="pipeline-step-icon">🐘</div>
+      <div class="pipeline-step-name">Saved</div>
+      <div class="pipeline-step-desc">Persisted to history in Supabase</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FEATURES -->
+<section class="section">
+  <div class="section-label">Capabilities</div>
+  <h2 class="section-title">Features Built</h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🗂️</div>
+      <div class="feature-title">Resume Vault</div>
+      <div class="feature-desc">Resume, work history, projects, education, and skills stored in Supabase as the single source of truth the AI reasons from.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎯</div>
+      <div class="feature-title">Job Analyzer</div>
+      <div class="feature-desc">Paste a job description; the full vault is assembled into a structured context block and analyzed against the role.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <div class="feature-title">Fit Report</div>
+      <div class="feature-desc">Honest fit score, plain-spoken summary, must-have vs nice-to-have gaps, prioritized skills, and evidence-backed strengths.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">✍️</div>
+      <div class="feature-title">Resume Optimizer</div>
+      <div class="feature-desc">Bullet-level reframes plus surfacing of undersold experience already in the vault, each suggestion citing its evidence.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🕓</div>
+      <div class="feature-title">Analysis History</div>
+      <div class="feature-desc">Every analysis saved and revisitable, to track applications and compare fit across roles over time.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💼</div>
+      <div class="feature-title">Freelance Mode</div>
+      <div class="feature-desc">Evaluates Upwork gigs with a send-or-skip verdict framework, then drafts client proposals under strict voice and integrity rules.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🧩</div>
+      <div class="feature-title">Plain-English Capture</div>
+      <div class="feature-desc">Brain-dump a side project in natural language; Claude structures it into clean fields for review before saving.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔒</div>
+      <div class="feature-title">Secure Proxy</div>
+      <div class="feature-desc">A Cloudflare Worker holds the API key as a secret, so it never ships in the public frontend bundle.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📦</div>
+      <div class="feature-title">Store Rich, Output Brief</div>
+      <div class="feature-desc">The vault keeps full structured detail for accurate comparison; generated bullets apply smart brevity to what was actually produced.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SPRINTS -->
+<section class="section">
+  <div class="section-label">Build History</div>
+  <h2 class="section-title">Sprint Log</h2>
+  <div class="sprint-list">
+
+    <div class="sprint-item">
+      <div>
+        <div class="sprint-num active">01</div>
+        <div class="sprint-badge badge-complete">Complete</div>
+      </div>
+      <div>
+        <div class="sprint-title">Foundation & Backend</div>
+        <ul class="sprint-features">
+          <li>React + Vite + Tailwind scaffold with a dark design system</li>
+          <li>Supabase project with relational schema and row-level security</li>
+          <li>Client wired in, end-to-end connection verified</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sprint-item">
+      <div>
+        <div class="sprint-num active">02</div>
+        <div class="sprint-badge badge-complete">Complete</div>
+      </div>
+      <div>
+        <div class="sprint-title">Resume Vault & Claude Proxy</div>
+        <ul class="sprint-features">
+          <li>Full CRUD vault: resume, work history, skills</li>
+          <li>Cloudflare Worker deployed as a Claude proxy, key held as a secret</li>
+          <li>CORS locked to localhost and the deploy domain, round-trip verified</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sprint-item">
+      <div>
+        <div class="sprint-num active">03</div>
+        <div class="sprint-badge badge-complete">Complete</div>
+      </div>
+      <div>
+        <div class="sprint-title">Analyzer, Fit Report & Optimizer</div>
+        <ul class="sprint-features">
+          <li>Vault-context assembler feeding an honest, evidence-based prompt</li>
+          <li>Structured Fit Report UI: score ring, gaps, strengths, prioritized skills</li>
+          <li>Resume Optimizer with reframes and evidence-cited undersold experience</li>
+          <li>Analyses persisted with extracted job title and company</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sprint-item">
+      <div>
+        <div class="sprint-num active">04</div>
+        <div class="sprint-badge badge-complete">Complete</div>
+      </div>
+      <div>
+        <div class="sprint-title">History & Freelance Mode</div>
+        <ul class="sprint-features">
+          <li>Analysis History view with click-to-expand reports and delete</li>
+          <li>Upwork gig verdict engine: send-or-skip framework, stretch-bid logic</li>
+          <li>Cover letter generator with hard voice and integrity guardrails</li>
+          <li>Vault expansion: projects, education, plain-English parse capture</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sprint-item">
+      <div>
+        <div class="sprint-num">05</div>
+        <div class="sprint-badge badge-planned">Planned</div>
+      </div>
+      <div>
+        <div class="sprint-title">Polish & Deploy</div>
+        <ul class="sprint-features">
+          <li>GitHub Pages deployment pipeline</li>
+          <li>Final styling pass for portfolio presentation</li>
+          <li>Public README and showcase documentation</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PORTFOLIO VALUE -->
+<section class="section">
+  <div class="section-label">Portfolio Value</div>
+  <h2 class="section-title">Skills Demonstrated</h2>
+  <div class="portfolio-grid">
+    <div class="portfolio-item">
+      <div class="portfolio-item-label">Full-Stack Engineering</div>
+      <div class="portfolio-item-title">React Frontend to PostgreSQL Backend</div>
+      <div class="portfolio-item-desc">Designed and built a complete full-stack application from zero — component architecture, a relational schema with row-level security, API integration, and a deployment pipeline. Every layer architected independently.</div>
+    </div>
+    <div class="portfolio-item">
+      <div class="portfolio-item-label">Prompt Engineering</div>
+      <div class="portfolio-item-title">Honest, Structured AI Output</div>
+      <div class="portfolio-item-desc">System prompts constrained to fixed JSON shapes for reliable rendering, with integrity rules that forbid fabrication and enforce evidence-backed claims. The hard part of the build, and the part that makes it trustworthy.</div>
+    </div>
+    <div class="portfolio-item">
+      <div class="portfolio-item-label">Security Architecture</div>
+      <div class="portfolio-item-title">Cloudflare Worker API Proxy</div>
+      <div class="portfolio-item-desc">The Anthropic API key is held as a Worker secret and never reaches the public frontend bundle. Row-level security enabled across all tables. A production-grade pattern for client-side AI products.</div>
+    </div>
+    <div class="portfolio-item">
+      <div class="portfolio-item-label">AI Product Design</div>
+      <div class="portfolio-item-title">Model Output to Usable Product</div>
+      <div class="portfolio-item-desc">Turned raw model responses into a coherent product: assembled one consistent context block for every feature, parsed structured output defensively, and rendered fit reports, reframes, and proposals a user can act on.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-left">Career <span>Copilot</span></div>
+  <div class="footer-right">
+    Built by JC Lopez · T00f-io<br>
+    <a href="https://github.com/T00f-io/career-copilot" target="_blank">GitHub</a> ·
+    <a href="https://github.com/T00f-io/career-copilot#readme" target="_blank">README</a><br>
+    React · Supabase · Claude API · Cloudflare Workers
+  </div>
+</footer>
+
+</body>
+</html>
